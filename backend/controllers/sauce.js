@@ -76,7 +76,7 @@ exports.deleteSauce = (req, res, next) => {
     // on récupère l'URL de l'image
     const filename = sauce.imageUrl.split("/images/")[1];
     fs.unlink(`images/${filename}`, () => {
-      // on supprime la sauce de la datebase
+      // on supprime la sauce de la database
       Sauce.deleteOne({ _id: req.params.id })
         .then(() => res.status(200).json({ message: "Sauce supprimée" }))
         .catch((error) => res.status(400).json({ error }));

@@ -1,7 +1,6 @@
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
-
-dotenv.config();
+dotenv.config({ path: "../../.env" });
 
 module.exports = (req, res, next) => {
   try {
@@ -9,12 +8,12 @@ module.exports = (req, res, next) => {
      place ces sous-chaînes dans un tableau et retourne le tableau.
       La division est effectuée en recherchant un motif ; où le motif est fourni comme premier paramètre dans l'appel de la méthode. */
 
-    // ici on utilise la méthode .split() pour ne prendre uniquement la chaine du TOKEN_JWT_KEY
+    // ici on utilise la méthode .split() pour ne prendre uniquement la chaine du token
     const token = req.headers.authorization.split(" ")[1];
 
     const decodedToken = jwt.verify(token, process.env.TOKEN_JWT_KEY);
 
-    // on récupére l'userId du TOKEN_JWT_KEY
+    // on récupére l'userId du token
     const userId = decodedToken.userId;
 
     // autorisation de la requete uniquement si l'userId existe dans la requete et s'il correspond bien
