@@ -7,10 +7,10 @@ const router = express.Router();
 // on importe le middleware qui va nous permettre d'authentifier les pages de l'application
 const auth = require("../middleware/auth");
 
-// on importe le middleware qui va définir le nom et le destination des fichiers images
+// on importe le middleware qui va définir le nom et la destination des fichiers images
 const multer = require("../middleware/multer-config");
 
-// on importe le fichier de contrôleurdes sauces qu'on a exporté et on les attribute aux routes correspondante pour améliorer la maintenabilité de l'application
+// on importe le fichier de contrôleur des sauces qu'on a exporté et on les attributes aux routes correspondantes pour améliorer la maintenabilité de l'application
 const sauceCtrl = require("../controllers/sauce");
 
 // route pour afficher toutes les sauces
