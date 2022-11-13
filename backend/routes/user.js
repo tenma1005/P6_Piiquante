@@ -15,4 +15,5 @@ const passLimiter = rateLimit({
 router.post("/signup", userCtrl.signup);
 router.post("/login", passLimiter, userCtrl.login);
 
+// on export les routes
 module.exports = router;

@@ -13,6 +13,7 @@ const multer = require("../middleware/multer-config");
 // on importe le fichier de contrôleur des sauces qu'on a exporté et on les attributes aux routes correspondantes pour améliorer la maintenabilité de l'application
 const sauceCtrl = require("../controllers/sauce");
 
+// On définie toutes les routes :
 // route pour afficher toutes les sauces
 router.get("/", auth, sauceCtrl.getAllSauces);
 
@@ -31,4 +32,5 @@ router.delete("/:id", auth, sauceCtrl.deleteSauce);
 // route pour les likes et dislikes
 router.post("/:id/like", auth, sauceCtrl.likeSauceUser);
 
+// on export les routes
 module.exports = router;

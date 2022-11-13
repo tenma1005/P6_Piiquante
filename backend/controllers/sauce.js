@@ -1,4 +1,4 @@
-// on import le modèle Sauce
+// on importe le modèle sauce
 const Sauce = require("../models/sauce");
 
 /*fs  signifie « file system » (soit « système de fichiers », en français).
@@ -12,17 +12,25 @@ const fs = require("fs");
 
 // pour que l'utilisateur puisse créer une sauce
 exports.createSauce = (req, res, next) => {
+  // on modifie le format de la requête pour la transformer en objet
   const sauceObject = JSON.parse(req.body.sauce);
+
+  // on supprime l'id renvoyé par le front-end
   delete sauceObject._id;
 
+  // on crée d'une nouvelle instance 'Sauce'
   const sauce = new Sauce({
+    // on utilise le racourci spread (...) pour récupérer facilement les informations name, description, ect...
     ...sauceObject,
+    // on récupère l'URL dynamique 'image' généré par multer
     imageUrl: `${req.protocol}://${req.get("host")}/images/${
       req.file.filename
     }`,
   });
+  // on engeristre ensuite l'objet dans la database
   sauce
     .save()
+    // on fait une promise
     .then(() => {
       res.status(201).json({ message: "Objet enregistré !" });
     })
@@ -30,27 +38,36 @@ exports.createSauce = (req, res, next) => {
       res.status(400).json({ error });
     });
 
-  // on affiche les détails ainsi que l'url de l'image ajouté
+  // on affiche les détails ainsi que l'URL de l'image ajoutée
   console.log(sauce);
 };
 
-// on renvoi la sauce présente dans la base de donnée en fonction de l'ID de la sauce
+// on renvoie la sauce présente dans la database en fonction de l'ID de la sauce
 exports.getOneSauce = (req, res, next) => {
   // on identifie la sauce en question
-  Sauce.findOne({ _id: req.params.id })
+  Sauce.findOne(
+    // on définie avec params le même id que la sauce identifiée
+    { _id: req.params.id }
+  )
+    // on fait une promise
     .then((sauce) => res.status(200).json(sauce))
     .catch((error) => res.status(404).json({ error: error }));
 };
 
 exports.modifySauce = (req, res, next) => {
+  // on crée un objet en vérifiant s'il y a une image à modifier
   const sauceObject = req.file
     ? {
+        // on récupère les informations des objets
         ...JSON.parse(req.body.sauce),
         imageUrl: `${req.protocol}://${req.get("host")}/images/${
           req.file.filename
         }`,
       }
-    : { ...req.body };
+    : {
+        // si l'image n'est pas à modifier, on reprend l'objet sans modifier l'image
+        ...req.body,
+      };
 
   // on identifie la sauce en question
   Sauce.findOne({ _id: req.params.id })
@@ -59,9 +76,13 @@ exports.modifySauce = (req, res, next) => {
       const filename = sauce.imageUrl.split("/images/")[1];
       fs.unlink(`images/${filename}`, () => {
         Sauce.updateOne(
-          { _id: req.params.id },
+          {
+            // on insère notre nouvel objet avec le raccourci spread (...)
+            _id: req.params.id,
+          },
           { ...sauceObject, _id: req.params.id }
         )
+          // on fait une promise
           .then(() => res.status(200).json({ message: "Objet modifié!" }))
           .catch((error) => res.status(500).json({ error }));
       });
@@ -71,23 +92,26 @@ exports.modifySauce = (req, res, next) => {
 
 // pour pouvoir supprimer une sauce
 exports.deleteSauce = (req, res, next) => {
-  // on identifie la sauce en question
+  // on identifie la sauce en question avec la méthode findOne()
   Sauce.findOne({ _id: req.params.id }).then((sauce) => {
     // on récupère l'URL de l'image
     const filename = sauce.imageUrl.split("/images/")[1];
+    // on supprime le fichier avec la méthode unlink()
     fs.unlink(`images/${filename}`, () => {
       // on supprime la sauce de la database
       Sauce.deleteOne({ _id: req.params.id })
+        // on fait une promise
         .then(() => res.status(200).json({ message: "Sauce supprimée" }))
         .catch((error) => res.status(400).json({ error }));
     });
   });
 };
 
-// on renvoi la totalité les sauces présente dans la database
+// on renvoie la totalité des sauces présentes dans la database
 exports.getAllSauces = (req, res, next) => {
-  // on récupère la totalité des sauces
+  // on récupère la totalité des sauces avec la méthode find()
   Sauce.find()
+    // on fait une promise
     .then((sauces) => res.status(200).json(sauces))
     .catch((error) => res.status(400).json({ error }));
 };
@@ -97,17 +121,18 @@ exports.getAllSauces = (req, res, next) => {
 /*=================================================================*/
 
 exports.likeSauceUser = (req, res, next) => {
+  // on met une condition pour que seuls les utilisateurs inscrits puissent liker ou disliker une sauce
   if (req.body.userId) {
     switch (req.body.like) {
       // si "like=1" alors effectue une incrémentation de l'attribut "likes" de la sauce et on rajoute l'id de l'utilisateur (userId) dans le tableau usersLiked (voir le model sauce.js)
       case 1:
         // on identifie la sauce en question
-        console.log(req.params);
+        //console.log(req.params);
 
         Sauce.findOne({ _id: req.params.id })
 
           .then((sauce) => {
-            // on vérifie
+            // on vérifie si l'utilisateur a déjà liké ou disliké
             if (
               sauce.usersLiked.includes(req.body.userId) ||
               sauce.usersDisliked.includes(req.body.userId)
@@ -117,7 +142,6 @@ exports.likeSauceUser = (req, res, next) => {
               });
             } else {
               console.log("Sauce liké...");
-              //console.log(_id);
               Sauce.updateOne(
                 { _id: req.params.id },
                 {
@@ -162,7 +186,7 @@ exports.likeSauceUser = (req, res, next) => {
           .catch((error) => res.status(400).json({ error }));
         break;
 
-      /*si like=0 alors on prends les deux tableaux (usersLiked et usersDisliked) et on effectue une maj des attributs "likes"
+      /*si like=0 alors on prend les deux tableaux (usersLiked et usersDisliked) et on effectue une maj des attributs "likes"
     et "dislikes" ainsi que des tableaux en fonction de l'userId dans l'un des deux */
       case 0:
         // on identifie la sauce en question
