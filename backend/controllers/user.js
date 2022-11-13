@@ -15,7 +15,7 @@ passwordSchema
   .is()
   .min(8) // le mot de passe doit contenir minimum 8 caractères
   .is()
-  .max(30) // le mot de passe doit contenir maximum 30 caractères
+  .max(20) // le mot de passe doit contenir maximum 20 caractères
   .has()
   .uppercase(1) // le mot de passe doit contenir minimum 1 lettre majuscule
   .has()
