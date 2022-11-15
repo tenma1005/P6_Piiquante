@@ -16,9 +16,7 @@ module.exports = (req, res, next) => {
     // on récupére l'userId du token
     const userId = decodedToken.userId;
 
-    // autorisation de la requête uniquement si l'userId existe dans la requête et s'il correspond bien
     if (req.body.userId && req.body.userId !== userId) {
-      // on compare l'userId de la requête à celui de notre token
       throw "l'user id n'est pas valible !";
     } else {
       next();

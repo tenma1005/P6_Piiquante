@@ -25,7 +25,7 @@ const helmet = require("helmet");
 const sauceRoutes = require("./routes/sauce");
 const userRoutes = require("./routes/user");
 
-// on stocke méthode express() dans une constante
+// on stocke la méthode express() dans une constante
 const app = express();
 
 // connexion à la database

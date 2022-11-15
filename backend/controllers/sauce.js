@@ -222,10 +222,6 @@ exports.likeSauceUser = (req, res, next) => {
           })
           .catch((error) => res.status(400).json({ error }));
         break;
-      default:
-        console.error("la valeur doit être entre -1 et 1...");
     }
-  } else {
-    console.log("nope");
   }
 };
