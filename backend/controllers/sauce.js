@@ -141,13 +141,13 @@ exports.likeSauceUser = (req, res, next) => {
                 error: "Vous avez déja liké ou disliké cette sauce...",
               });
             } else {
-              console.log("Sauce liké...");
               Sauce.updateOne(
                 { _id: req.params.id },
                 {
                   $inc: { likes: 1 },
                   $push: { usersLiked: req.body.userId },
                 }
+                //console.log("Sauce liké...");
               )
 
                 .then(() => res.status(200).json({ message: "Je like" }))
@@ -222,6 +222,16 @@ exports.likeSauceUser = (req, res, next) => {
           })
           .catch((error) => res.status(400).json({ error }));
         break;
+
+      default:
+        res.status(401).json({
+          error: "la valeur doit être entre -1 et 1...",
+        });
     }
+  } else {
+    res.status(401).json({
+      error:
+        "Vous devez être identifié si vous voulez liker ou disliker une sauce...",
+    });
   }
 };

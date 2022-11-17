@@ -52,7 +52,6 @@ const errorHandler = (error) => {
 // on crée le serveur
 const server = http.createServer(app);
 
-// Et on écoute les erreurs (s'il y en a)
 server.on("error", errorHandler);
 server.on("listening", () => {
   const address = server.address();
