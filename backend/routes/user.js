@@ -8,7 +8,7 @@ const userCtrl = require("../controllers/user");
 
 const passLimiter = rateLimit({
   windowMs: 10 * 60 * 1000, // temps d'attente : 10 minutes
-  max: 5, // le nombre d'essais max par adresse id
+  max: 5, // le nombre d'essais max par adresse IP
 });
 
 // on crée les différentes routes de l'api en leur précisant le bon ordre des middlewares (c-a-d pas "/login" avant "/signup")
